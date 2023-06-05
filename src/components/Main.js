@@ -1,25 +1,17 @@
-import React, { useEffect } from 'react';
-import api from '../utils/Api';
+import React from 'react';
 import Card from './Card';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
-  const [userName, setUserName] = React.useState('');
-  const [userDescription, setUserDescription] = React.useState('');
-  const [userAvatar, setUserAvatar] = React.useState('');
-  const [cards, setCards] = React.useState([]);
-
-  useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([data, card]) => {
-        setUserAvatar(data.avatar);
-        setUserName(data.name);
-        setUserDescription(data.about);
-        setCards(card);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+function Main({
+  onEditAvatar,
+  onEditProfile,
+  onAddPlace,
+  onCardClick,
+  onCardLike,
+  onCardDelete,
+  cards,
+}) {
+  const currentUser = React.useContext(CurrentUserContext);
 
   return (
     <main className="content">
@@ -30,28 +22,21 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
           title="Редактировать аватар"
           onClick={onEditAvatar}
         >
-          <div
-            style={{
-              backgroundImage: `url(${userAvatar})`,
-              backgroundSize: 'cover',
-              backgroundRepeat: 'no-repeat',
-              borderRadius: '50%',
-              width: '120px',
-              height: '120px',
-              position: `relative`,
-              zIndex: `-1`
-            }}
+          <img
+            src={currentUser.avatar}
+            alt="Аватар пользователя"
+            className="profile__image"
           />
         </button>
         <div className="profile__info">
-          <h1 className="profile__title">{userName}</h1>
+          <h1 className="profile__title">{currentUser.name}</h1>
           <button
             type="button"
             className="profile__edit-button"
             title="Редактировать профиль"
             onClick={onEditProfile}
           ></button>
-          <p className="profile__text">{userDescription}</p>
+          <p className="profile__text">{currentUser.about}</p>
         </div>
         <button
           type="button"
@@ -70,6 +55,8 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
               name={card.name}
               likes={card.likes.length}
               onCardClick={onCardClick}
+              onCardLike={onCardLike}
+              onCardDelete={onCardDelete}
             />
           ))}
         </ul>

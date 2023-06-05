@@ -17,7 +17,7 @@ class Api {
 
   getInitialCards() {
     return this._request(`cards`, {
-      headers: this._headers
+      headers: this._headers,
     });
   }
 
@@ -66,18 +66,25 @@ class Api {
     });
   }
 
-  putLikeCard(cardId) {
+  _putLikeCard(cardId) {
     return this._request(`cards/${cardId}/likes`, {
       method: 'PUT',
       headers: this._headers,
     });
   }
 
-  deleteLikeCard(cardId) {
+  _deleteLikeCard(cardId) {
     return this._request(`cards/${cardId}/likes`, {
       method: 'DELETE',
       headers: this._headers,
     });
+  }
+
+  changeLikeCardStatus(cardId, isLiked) {
+    if (isLiked) {
+      return this._putLikeCard(cardId);
+    }
+    return this._deleteLikeCard(cardId);
   }
 }
 
