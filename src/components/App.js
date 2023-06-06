@@ -119,12 +119,18 @@ function App() {
         }
       }
 
+      function handleClickWindowClose(evt) {
+        if (evt.target.classList.contains('popup')) {
+          closeAllPopups();
+        }
+      }
+
       document.addEventListener('keydown', handleEscClose);
-      document.addEventListener('mousedown', closeAllPopups);
+      document.addEventListener('mousedown', handleClickWindowClose);
 
       return () => {
         document.removeEventListener('keydown', handleEscClose);
-        document.removeEventListener('mousedown', closeAllPopups);
+        document.removeEventListener('mousedown', handleClickWindowClose);
       };
     }
   }, [
